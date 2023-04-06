@@ -13,13 +13,3 @@ def signup(request):
     elif request.method == 'GET':
         form = SignupForm()
     return render(request, 'accounts/signup.html', {'form': form})
-
-
-def user_login(request):
-    if request.method == 'GET':
-        return render(request, 'accounts/signin.html')
-
-
-def user_logout(request):
-    # 로그아웃 view
-    pass

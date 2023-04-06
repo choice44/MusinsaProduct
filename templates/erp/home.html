@@ -1,0 +1,11 @@
+{% extends 'base.html' %}
+
+{% block content %}
+    <h1>상품 리스트</h1>
+    <ul>
+    {% for product in products %}
+        <li>{{ product.name }} - {{ product.code }} - {{ product.description }} - {{ product.price }} - {{ product.size }} - {{ product.stock_quantity }}</li>
+    {% endfor %}
+    </ul>
+    <a href="{% url 'erp:product_create' %}" class="btn btn-secondary">상품 생성 페이지 </a>
+{% endblock %}

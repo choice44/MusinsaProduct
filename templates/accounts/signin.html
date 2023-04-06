@@ -7,7 +7,8 @@
     <div class="container">
         <div class="wrap">
             <h2 class="title-center"> 로그인</h2>
-            <form class="form-area">
+            <form class="form-area" method="post" action="{% url 'accounts:login' %}">
+                {% csrf_token %}
                 <div class="form-group mt-2 mb-2">
                     <label for="username">이름</label>
                     <input type="text" class="form-control" id="username" name="username">
@@ -16,6 +17,7 @@
                     <label for="password">비밀번호</label>
                     <input type="password" class="form-control" id="password" name="password">
                 </div>
+                {% include "form_errors.html" %}
                 <hr>
                 <div style="float: right">
                     <button type="submit" class="btn btn-primary">로그인</button>
