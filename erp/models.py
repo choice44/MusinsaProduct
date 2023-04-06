@@ -1,3 +1,5 @@
+import datetime
+
 from django.db import models
 
 
@@ -19,7 +21,7 @@ class Product(models.Model):
         ('F', 'Free'),
     )
     size = models.CharField(choices=sizes, max_length=2)
-
+    stock_quantity = models.IntegerField(default=0)
     """
     choices 매개변수는 Django 모델 필드에서 사용하는 매개변수 중 하나로 
     해당 필드에서 선택 가능한 옵션을 지정하는 역할을 합니다. 
@@ -35,4 +37,39 @@ class Product(models.Model):
         if not self.id:  # 새로운 인스턴스인 경우에만 stock_quantity를 초기화합니다.
             self.stock_quantity = 0
         super().save(*args, **kwargs)
-        pass
+
+
+class Inbound(models.Model):
+    """
+    입고 모델입니다.
+    상품, 수량, 입고 날짜, 금액 필드를 작성합니다.
+    """
+    product = models.ForeignKey(Product, on_delete=models.CASCADE)
+    quantity = models.DecimalField(max_digits=3, decimal_places=0)
+    inbound_date = models.DateField()
+    amount = models.DecimalField(max_digits=10, decimal_places=0)
+
+    def __str__(self):
+        return f"{self.product} - {self.quantity} - {self.amount}"
+
+    def save(self, *args, **kwargs):
+        self.amount = self.quantity * self.product.price
+        super().save(*args, **kwargs)
+
+
+class Outbound(models.Model):
+    """
+    입고 모델입니다.
+    상품, 수량, 입고 날짜, 금액 필드를 작성합니다.
+    """
+    product = models.ForeignKey(Product, on_delete=models.CASCADE)
+    quantity = models.DecimalField(max_digits=3, decimal_places=0)
+    outbound_date = models.DateField()
+    amount = models.DecimalField(max_digits=10, decimal_places=0)
+
+    def __str__(self):
+        return f"{self.product} - {self.quantity} - {self.amount}"
+
+    def save(self, *args, **kwargs):
+        self.amount = self.quantity * self.product.price
+        super().save(*args, **kwargs)

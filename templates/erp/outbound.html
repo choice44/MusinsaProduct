@@ -1,0 +1,12 @@
+{% extends 'base.html' %}
+
+{% block content %}
+    <h1>출고</h1>
+    <h3>{{ product.name }} - {{ product.code }} - {{ product.description }} - {{ product.price }} - {{ product.size }} - {{ product.stock_quantity }}</h3>
+    <form action="{% url 'erp:outbound_create' product.id %}" method="post">
+        {% csrf_token %}
+        {{ form.as_p }}
+        {% include "form_errors.html" %}
+        <button type="submit">출고</button>
+    </form>
+{% endblock %}
