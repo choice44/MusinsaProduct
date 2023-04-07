@@ -2,7 +2,7 @@ from django.shortcuts import render, get_object_or_404, redirect
 from django.contrib.auth.decorators import login_required
 from django.db import transaction
 from django.utils import timezone
-from .models import Product
+from .models import Product, Inventory
 from .forms import ProductForm, InboundForm, OutboundForm
 
 
@@ -71,3 +71,44 @@ def outbound_create(request, product_id):
         form = OutboundForm()
         context = {'product': product, 'form': form}
     return render(request, 'erp/outbound.html', context)
+
+
+@login_required
+def inventory(request, product_id):
+    """
+    inbound_create, outbound_create view에서 만들어진 데이터를 합산합니다.
+    Django ORM을 통하여 총 수량, 가격등을 계산할 수 있습니다.
+    """
+    product = get_object_or_404(Product, pk=product_id)
+    inven = Inventory.objects.filter(product=product).first()
+    if not inven:
+        inven = Inventory(product=product)
+    total_inbounds_quantity = 0
+    total_inbounds_price = 0
+    total_outbounds_quantity = 0
+    total_outbounds_price = 0
+    # 총 입고 수량, 가격 계산
+    inbounds = product.inbound_set.all()
+    for inbound in inbounds:
+        total_inbounds_quantity += inbound.quantity
+        total_inbounds_price += inbound.amount
+
+    # 총 출고 수량, 가격 계산
+    outbounds = product.outbound_set.all()
+    for outbound in outbounds:
+        total_outbounds_quantity += outbound.quantity
+        total_outbounds_price += outbound.amount
+    inven.stock_quantity = total_inbounds_quantity - total_outbounds_quantity
+    inven.save()
+
+    context = {'inventory': inven,
+               'product': product,
+               'inbounds': inbounds,
+               'outbounds': outbounds,
+               'total_inbounds_quantity': total_inbounds_quantity,
+               'total_outbounds_quantity': total_outbounds_quantity,
+               'total_inbounds_price': total_inbounds_price,
+               'total_outbounds_price': total_outbounds_price,
+               }
+
+    return render(request, 'erp/inventory.html', context)

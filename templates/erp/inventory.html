@@ -1,0 +1,23 @@
+{% extends 'base.html' %}
+
+{% block content %}
+    <h1>인벤토리</h1>
+    <h3>{{ product.name }} - {{ product.code }} - {{ product.size }}</h3>
+    <ul>
+    <p>입고목록</p>
+    {% for inbound in inbounds %}
+        <li>{{ inbound.quantity }} - {{ inbound.amount }} - {{ inbound.inbound_date }}</li>
+    {% endfor %}
+    </ul>
+    <ul>
+    <p>출고목록</p>
+    {% for outbound in outbounds %}
+        <li>{{ outbound.quantity }} - {{ outbound.amount }} - {{ outbound.outbound_date }}</li>
+    {% endfor %}
+    </ul>
+    <p>총 입고 수량: {{ total_inbounds_quantity }}</p>
+    <p>총 입고 금액: {{ total_inbounds_price }}</p>
+    <p>총 출고 수량: {{ total_outbounds_quantity }}</p>
+    <p>총 출고 금액: {{ total_outbounds_price }}</p>
+    <p>현 재고 수량: {{ inventory.stock_quantity }}</p>
+{% endblock %}

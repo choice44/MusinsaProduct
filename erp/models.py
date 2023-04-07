@@ -21,7 +21,7 @@ class Product(models.Model):
         ('F', 'Free'),
     )
     size = models.CharField(choices=sizes, max_length=2)
-    stock_quantity = models.IntegerField(default=0)
+    stock_quantity = models.PositiveIntegerField(default=0)
     """
     choices 매개변수는 Django 모델 필드에서 사용하는 매개변수 중 하나로 
     해당 필드에서 선택 가능한 옵션을 지정하는 역할을 합니다. 
@@ -73,3 +73,19 @@ class Outbound(models.Model):
     def save(self, *args, **kwargs):
         self.amount = self.quantity * self.product.price
         super().save(*args, **kwargs)
+
+
+class Inventory(models.Model):
+
+    """
+    창고의 제품과 수량 정보를 담는 모델입니다.
+    상품, 수량 필드를 작성합니다.
+    작성한 Product 모델을 OneToOne 관계로 작성합시다.
+    """
+
+    product = models.OneToOneField(Product, on_delete=models.CASCADE)
+    stock_quantity = models.PositiveIntegerField(default=0)
+    #
+    # def save(self, *args, **kwargs):
+    #     self.stock_quantity = self.product.stock_quantity
+    #     super().save(*args, **kwargs)

@@ -5,6 +5,7 @@
     <ul>
     {% for product in products %}
         <li>{{ product.name }} - {{ product.code }} - {{ product.description }} - {{ product.price }} - {{ product.size }} - {{ product.stock_quantity }}</li>
+        <a href="{% url 'erp:product_inventory' product.id %}" class="btn btn-secondary">인벤토리</a>
         <a href="{% url 'erp:inbound_create' product.id %}" class="btn btn-secondary">입고</a>
         <a href="{% url 'erp:outbound_create' product.id %}" class="btn btn-secondary">출고</a>
     {% endfor %}
